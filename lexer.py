@@ -23,8 +23,7 @@ class Lexer:
         'and': 'AND',
         'or': 'OR',
         'not': 'NOT',
-        'in': 'IN',
-        'void': 'VOID'
+        'in': 'IN'
     }
     # Tokens
     tokens = [
@@ -32,7 +31,7 @@ class Lexer:
         'TRUE', 'FALSE', 'PRINT', 'RETURN', 'MAIN', 'IF', 'ELSE', 'ELSEIF', 'WHILE', 'ON',
         'WHERE', 'FOR', 'AND', 'OR', 'NOT', 'IN', 'ASSIGN', 'SUM', 'SUB', 'MUL', 'DIV',
         'MOD', 'GT', 'GE', 'LT', 'LE', 'EQ', 'NE', 'LCB', 'RCB', 'LRB', 'RRB', 'LSB', 'RSB',
-        'SEMICOLON', 'COLON', 'COMMA', 'ERROR', 'VOID'
+        'SEMICOLON', 'COLON', 'COMMA', 'ERROR'
     ]
 
     # Check for correct IDs
@@ -58,9 +57,9 @@ class Lexer:
         | ([A-Z][0-9a-zA-Z_]*)
         | (\.[0-9]+)
         | (([0-9]+\.[0-9]+\.)[0-9\.]*)
-        | (0*((?=[0-9]{11,}\.)(([1-9]+0*)+|0)\.((0*[1-9]+)+|0))0*)
-        | (0*[1-9][0-9]{10,})
-        | ([/%\-\*\+]\s*([/%\-\*\+]\s*)+)
+        | (0*((?=[0-9]{10,}\.)(([1-9]+0*)+|0)\.((0*[1-9]+)+|0))0*)
+        | (0*[1-9][0-9]{9,})
+        | [/%\-\*\+](\s*[/%\-\*\+])+
         """
         # (0*((([1-9]+0*)+|0)(?=\.[0-9]{10,}[1-9])\.((0*[1-9]+)+|0))0*) #decimal part more than 10 digits without trailing zero
         return t
@@ -83,8 +82,7 @@ class Lexer:
         t.lexer.lineno += len(t.value)
 
     def t_error(self, t):
-        print('Error at ', t.value[0])
-        t.lexer.skip(1)
+        raise Exception('Error at ', t.value[0])
 
     def build(self, **kwargs):
         self.lexer = lex.lex(module=self, **kwargs)
